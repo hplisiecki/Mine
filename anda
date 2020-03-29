@@ -1,0 +1,24 @@
+def percentage_change(region, data) -> int:
+    nasza_data = data.split("/")
+    dzisiaj = format_date(datetime.date(int(nasza_data[2]), int(nasza_data[0]), int(nasza_data[1])))
+    bait = datetime.date(int(nasza_data[2]), int(nasza_data[0]), int(nasza_data[1])) + datetime.timedelta(days= - 1)
+    wczoraj = format_date(bait)
+    
+    a = dfC.loc[dfC["Country/Region"] == region][dzisiaj].values[0]
+    b = dfC.loc[dfC["Country/Region"] == region][wczoraj].values[0]
+    procent = round(a/b*100, 2)-100
+    if b == 0:
+        procent = "start"
+    return procent
+    
+    def percentage_country(region) -> list:
+    lista = []
+    for column in dfC.loc[dfC["Country/Region"] == region]:
+        
+        if dfC.loc[dfC["Country/Region"] == region][column].values[0] == 0:
+            if percentage_change(region, column) == "start":
+                vat = (0, region)
+                lista.insert(0,var)
+        if dfC.loc[dfC["Country/Region"] == region][column].values[0] != 0:
+            lista.append((percentage_change(region, column)), column)
+    return lista
