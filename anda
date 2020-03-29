@@ -1,9 +1,36 @@
+
+from typing import List
+import plotly.express as px
+import pandas as pd
+import os
+import datetime
+import matplotlib
+import matplotlib.pyplot as plt
+
+# confirmed cases
+url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+
+dfC = pd.read_csv(url, error_bad_lines=False)
+
+# deaths
+url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+dfD = pd.read_csv(url, error_bad_lines=False)
+
+# recovered cases
+url = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
+dfR = pd.read_csv(url, error_bad_lines=False)
+
+def format_date(date: datetime.date):
+    if os.name == "nt":
+        return date.strftime('%#m/%#d/%y')
+    else:
+        return date.strftime('%-m/%-d/%y')
+        
 def percentage_change(region, data) -> int:
     nasza_data = data.split("/")
     dzisiaj = format_date(datetime.date(int(nasza_data[2]), int(nasza_data[0]), int(nasza_data[1])))
     bait = datetime.date(int(nasza_data[2]), int(nasza_data[0]), int(nasza_data[1])) + datetime.timedelta(days= - 1)
     wczoraj = format_date(bait)
-    
     a = dfC.loc[dfC["Country/Region"] == region][dzisiaj].values[0]
     b = dfC.loc[dfC["Country/Region"] == region][wczoraj].values[0]
     procent = round(a/b*100, 2)-100
@@ -14,7 +41,6 @@ def percentage_change(region, data) -> int:
     def percentage_country(region) -> list:
     lista = []
     for column in dfC.loc[dfC["Country/Region"] == region]:
-        
         if dfC.loc[dfC["Country/Region"] == region][column].values[0] == 0:
             if percentage_change(region, column) == "start":
                 vat = (0, region)
